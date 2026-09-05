@@ -1,0 +1,60 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Yoto"
+          }
+        },
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Yoto"
+          }
+        }
+      }
+    },
+    "NSBluetoothAlwaysUsageDescription" : {
+      "comment" : "Privacy - Bluetooth Always Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This app uses Bluetooth to discover Google Cast devices on your network."
+          }
+        },
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Cette application utilise le Bluetooth pour détecter les appareils Google Cast sur votre réseau."
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription" : {
+      "comment" : "Privacy - Local Network Usage Description",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "This app uses the local network to discover Google Cast devices so you can stream radio stations to them."
+          }
+        },
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Cette application utilise le réseau local pour détecter les appareils Google Cast, afin que vous puissiez y diffuser des stations de radio."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.3"
+}

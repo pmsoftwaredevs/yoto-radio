@@ -1,0 +1,146 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "AirPlay" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "AirPlay"
+          }
+        }
+      }
+    },
+    "Buffering…" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Mise en mémoire tampon…"
+          }
+        }
+      }
+    },
+    "Cast" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Cast"
+          }
+        }
+      }
+    },
+    "Casting" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Diffusion en cours"
+          }
+        }
+      }
+    },
+    "Casting to %@" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Diffusion en cours sur %@"
+          }
+        }
+      }
+    },
+    "Couldn't load radio stations. Check your connection and try again." : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Impossible de charger les stations de radio. Vérifiez votre connexion et réessayez."
+          }
+        }
+      }
+    },
+    "Currently Playing" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "En cours de lecture"
+          }
+        }
+      }
+    },
+    "Done" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Terminé"
+          }
+        }
+      }
+    },
+    "Loading radios…" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Chargement des radios…"
+          }
+        }
+      }
+    },
+    "Paused" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "En pause"
+          }
+        }
+      }
+    },
+    "Playing" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Lecture en cours"
+          }
+        }
+      }
+    },
+    "Radios" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Radios"
+          }
+        }
+      }
+    },
+    "Retry" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Réessayer"
+          }
+        }
+      }
+    },
+    "Volume on %@" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "machine_translated",
+            "value" : "Volume de %@"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.3"
+}
