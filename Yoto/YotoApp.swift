@@ -9,6 +9,10 @@ import SwiftUI
 
 @main
 struct YotoApp: App {
+    init() {
+        CastManager.shared.configure()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
