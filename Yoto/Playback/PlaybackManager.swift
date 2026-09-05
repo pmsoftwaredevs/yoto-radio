@@ -37,8 +37,15 @@ final class PlaybackManager: ObservableObject {
     private func configureAudioSession() {
         let session = AVAudioSession.sharedInstance()
         try? session.setCategory(.playback, mode: .default)
-        // Activating synchronously on the main thread risks a UI hang; use the async variant.
-        session.activate(options: []) { _, _ in }
+        // Activating synchronously on the main thread risks a UI hang; use the async variant
+        // where available and fall back to activating off the main thread on older OS versions.
+        if #available(iOS 27.0, *) {
+            session.activate(options: []) { _, _ in }
+        } else {
+            DispatchQueue.global(qos: .userInitiated).async {
+                try? session.setActive(true)
+            }
+        }
     }
 
     func play(_ station: RadioStation) {
