@@ -32,6 +32,7 @@
       }
     },
     "Casting" : {
+      "extractionState" : "stale",
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
