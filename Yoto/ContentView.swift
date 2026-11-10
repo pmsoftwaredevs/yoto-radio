@@ -62,7 +62,7 @@ struct ContentView: View {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(store.stations) { station in
                         Button {
-                            playback.play(station)
+                            playback.play(station, in: store.stations)
                         } label: {
                             RadioTileView(station: station, isActive: playback.currentStation?.id == station.id)
                         }
