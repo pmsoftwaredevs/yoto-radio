@@ -124,7 +124,7 @@ final class YotoAPIClient {
     private static func flatten(detail: CardDetail, fallbackTitle: String?, fallbackIconURLString: String?) -> [RadioStation] {
         guard let chapters = detail.content?.chapters else { return [] }
 
-        let cardTitle = detail.title ?? fallbackTitle ?? "Radio"
+        let cardTitle = detail.title ?? fallbackTitle ?? String(localized: "Radio")
         let cardIconString = detail.metadata?.cover?.imageL ?? fallbackIconURLString
         let languages = detail.metadata?.languages ?? []
 

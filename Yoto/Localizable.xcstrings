@@ -5,7 +5,7 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "AirPlay"
           }
         }
@@ -15,7 +15,7 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "Mise en mémoire tampon…"
           }
         }
@@ -25,18 +25,27 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "Cast"
           }
         }
       }
     },
-    "Casting" : {
-      "extractionState" : "stale",
+    "Cast device" : {
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
+            "value" : "Appareil Cast"
+          }
+        }
+      }
+    },
+    "Casting" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "translated",
             "value" : "Diffusion en cours"
           }
         }
@@ -46,8 +55,8 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Diffusion en cours sur %@"
+            "state" : "translated",
+            "value" : "Diffusion sur %@"
           }
         }
       }
@@ -56,7 +65,7 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "Impossible de charger les stations de radio. Vérifiez votre connexion et réessayez."
           }
         }
@@ -66,7 +75,7 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "En cours de lecture"
           }
         }
@@ -76,7 +85,7 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "Terminé"
           }
         }
@@ -86,7 +95,7 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "Chargement des radios…"
           }
         }
@@ -96,7 +105,7 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "En pause"
           }
         }
@@ -106,8 +115,18 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "Lecture en cours"
+          }
+        }
+      }
+    },
+    "Radio" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Radio"
           }
         }
       }
@@ -116,7 +135,7 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "Radios"
           }
         }
@@ -126,7 +145,7 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
+            "state" : "translated",
             "value" : "Réessayer"
           }
         }
@@ -136,8 +155,8 @@
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
-            "state" : "machine_translated",
-            "value" : "Volume de %@"
+            "state" : "translated",
+            "value" : "Volume sur %@"
           }
         }
       }

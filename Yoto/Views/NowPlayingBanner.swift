@@ -12,6 +12,21 @@ import SwiftUI
 struct NowPlayingBanner: View {
     @ObservedObject var playback: PlaybackManager
 
+    /// Live track metadata is already-final text (verbatim); the fallbacks are localized.
+    /// Branching on `Text` initializers keeps the literals going through the String Catalog —
+    /// a `String` ternary would silently skip localization.
+    private var subtitle: Text {
+        if let summary = playback.trackSummary {
+            return Text(verbatim: summary)
+        } else if playback.isCasting {
+            return Text("Casting")
+        } else if playback.isBuffering {
+            return Text("Buffering…")
+        } else {
+            return Text("Playing")
+        }
+    }
+
     var body: some View {
         if let station = playback.currentStation {
             HStack(spacing: 12) {
@@ -23,7 +38,7 @@ struct NowPlayingBanner: View {
                     Text(station.title)
                         .font(.subheadline.weight(.semibold))
                         .lineLimit(1)
-                    Text(playback.trackSummary ?? (playback.isCasting ? "Casting" : (playback.isBuffering ? "Buffering…" : "Playing")))
+                    subtitle
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

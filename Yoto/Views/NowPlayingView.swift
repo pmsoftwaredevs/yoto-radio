@@ -87,12 +87,17 @@ struct NowPlayingView: View {
         }
     }
 
+    /// Name of the connected receiver, with a localized fallback while it's still unknown.
+    private var castDeviceLabel: String {
+        castManager.castDeviceName ?? String(localized: "Cast device")
+    }
+
     // LocalizedStringResource (not String) so this actually gets looked up in the String
     // Catalog at runtime — a plain `String` return type made `Text(statusText)` use SwiftUI's
     // verbatim initializer, silently skipping localization even though the catalog had entries.
     private var statusText: LocalizedStringResource {
         if castManager.isConnected && playback.isPlaying && !playback.isBuffering {
-            return "Casting to \(castManager.castDeviceName ?? "Cast device")"
+            return "Casting to \(castDeviceLabel)"
         } else if playback.isBuffering {
             return "Buffering…"
         } else {
@@ -132,7 +137,7 @@ struct NowPlayingView: View {
         VStack(spacing: 12) {
             HStack {
                 Image(systemName: "tv.fill")
-                Text("Volume on \(castManager.castDeviceName ?? "Cast device")")
+                Text("Volume on \(castDeviceLabel)")
                     .font(.footnote.weight(.medium))
                 Spacer()
             }
