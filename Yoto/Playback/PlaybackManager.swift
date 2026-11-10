@@ -68,13 +68,18 @@ final class PlaybackManager: ObservableObject {
     private var queue: [RadioStation] = []
     private var artwork: MPMediaItemArtwork?
     private var artworkTask: Task<Void, Never>?
+    private var resumeValidationTask: Task<Void, Never>?
 
     var isCasting: Bool { castManager.isConnected }
 
     private init() {
         configureAudioSession()
         castManager.onSessionStarted = { [weak self] in self?.handleCastSessionStarted() }
+        castManager.onSessionResumed = { [weak self] in self?.handleCastSessionResumed() }
         castManager.onSessionEnded = { [weak self] in self?.handleCastSessionEnded() }
+        castManager.onRemoteStateChanged = { [weak self] playing, buffering in
+            Task { @MainActor [weak self] in self?.handleRemoteState(playing: playing, buffering: buffering) }
+        }
         metadataReceiver.onTitle = { [weak self] raw in
             Task { @MainActor [weak self] in self?.handleStreamTitle(raw) }
         }
@@ -207,6 +212,7 @@ final class PlaybackManager: ObservableObject {
     }
 
     func play(_ station: RadioStation, in stations: [RadioStation]? = nil) {
+        resumeValidationTask?.cancel()
         if let stations { queue = stations }
         if currentStation?.id != station.id { resetTrackMetadata() }
         currentStation = station
@@ -228,10 +234,19 @@ final class PlaybackManager: ObservableObject {
         if isCasting {
             if isPlaying {
                 castManager.pause()
-            } else {
+                isPlaying = false
+            } else if let station = currentStation,
+                      castManager.remoteContentURL == station.streamURL,
+                      castManager.remoteState?.isIdle == false {
                 castManager.resume()
+                isPlaying = true
+            } else if let station = currentStation {
+                // The receiver no longer holds our station (idle, finished, or claimed by
+                // another sender), so there is nothing to resume: load it again.
+                castManager.load(station)
+                isPlaying = true
+                isBuffering = true
             }
-            isPlaying.toggle()
         } else {
             if isPlaying {
                 player?.pause()
@@ -245,6 +260,7 @@ final class PlaybackManager: ObservableObject {
     }
 
     func stop() {
+        resumeValidationTask?.cancel()
         player?.pause()
         player = nil
         statusObserver = nil
@@ -296,6 +312,53 @@ final class PlaybackManager: ObservableObject {
         castManager.load(station)
         isPlaying = true
         isBuffering = false
+    }
+
+    /// The Cast session was re-attached (typically on returning to the foreground). Our last
+    /// known state may be stale — the receiver may have gone idle, finished, or been taken over
+    /// by another sender — so ask it what it is really doing before claiming anything.
+    private func handleCastSessionResumed() {
+        player?.pause()
+        player = nil
+        resumeValidationTask?.cancel()
+        guard let station = currentStation else {
+            isPlaying = false
+            isBuffering = false
+            return
+        }
+        isBuffering = true
+        resumeValidationTask = Task { [weak self] in
+            guard let self else { return }
+            let snapshot = await castManager.refreshRemoteSnapshot()
+            guard !Task.isCancelled, isCasting, currentStation?.id == station.id else { return }
+            applyRemoteSnapshot(snapshot, for: station)
+        }
+    }
+
+    private func applyRemoteSnapshot(_ snapshot: CastRemoteSnapshot?, for station: RadioStation) {
+        if let snapshot, !snapshot.isIdle, snapshot.contentURL == station.streamURL {
+            isPlaying = snapshot.isPlaying
+            isBuffering = snapshot.isBuffering
+        } else {
+            // Idle, stopped, or playing someone else's media: our station isn't on the speaker.
+            // Show it as stopped rather than hijacking the device; the user can press play.
+            isPlaying = false
+            isBuffering = false
+        }
+        updateNowPlayingInfo()
+    }
+
+    private func handleRemoteState(playing: Bool, buffering: Bool) {
+        guard isCasting, let station = currentStation, !castManager.isLoading else { return }
+        // Ignore updates describing media that isn't our station (e.g. claimed by another sender).
+        if let url = castManager.remoteContentURL, url != station.streamURL {
+            isPlaying = false
+            isBuffering = false
+        } else {
+            isPlaying = playing
+            isBuffering = buffering
+        }
+        updateNowPlayingInfo()
     }
 
     private func handleCastSessionEnded() {
