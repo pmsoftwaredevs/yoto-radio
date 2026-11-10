@@ -91,7 +91,7 @@ struct NowPlayingView: View {
     // Catalog at runtime — a plain `String` return type made `Text(statusText)` use SwiftUI's
     // verbatim initializer, silently skipping localization even though the catalog had entries.
     private var statusText: LocalizedStringResource {
-        if castManager.isConnected {
+        if castManager.isConnected && playback.isPlaying && !playback.isBuffering {
             return "Casting to \(castManager.castDeviceName ?? "Cast device")"
         } else if playback.isBuffering {
             return "Buffering…"
