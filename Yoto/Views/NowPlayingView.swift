@@ -28,6 +28,11 @@ struct NowPlayingView: View {
                     Text(playback.currentStation?.title ?? "")
                         .font(.title2.weight(.bold))
                         .multilineTextAlignment(.center)
+                    if let summary = playback.trackSummary {
+                        Text(summary)
+                            .font(.headline)
+                            .multilineTextAlignment(.center)
+                    }
                     Text(statusText)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)

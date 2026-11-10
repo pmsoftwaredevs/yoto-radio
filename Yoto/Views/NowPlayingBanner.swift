@@ -23,7 +23,7 @@ struct NowPlayingBanner: View {
                     Text(station.title)
                         .font(.subheadline.weight(.semibold))
                         .lineLimit(1)
-                    Text(playback.isCasting ? "Casting" : (playback.isBuffering ? "Buffering…" : "Playing"))
+                    Text(playback.trackSummary ?? (playback.isCasting ? "Casting" : (playback.isBuffering ? "Buffering…" : "Playing")))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
