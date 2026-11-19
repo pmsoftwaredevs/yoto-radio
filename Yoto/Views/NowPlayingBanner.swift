@@ -66,7 +66,7 @@ struct NowPlayingBanner: View {
         if let iconURL = station.iconURL {
             AsyncImage(url: iconURL) { phase in
                 if case .success(let image) = phase {
-                    image.resizable().scaledToFit()
+                    image.interpolation(.none).resizable().scaledToFit()
                 } else {
                     Image(systemName: "dot.radiowaves.left.and.right")
                 }

@@ -185,10 +185,24 @@ final class PlaybackManager: ObservableObject {
         guard let url = station.iconURL else { return }
         artworkTask = Task { [weak self] in
             guard let (data, _) = try? await URLSession.shared.data(from: url),
-                  let image = UIImage(data: data), !Task.isCancelled else { return }
+                  let source = UIImage(data: data), !Task.isCancelled else { return }
+            let image = Self.pixelUpscaled(source)
             let art = MPMediaItemArtwork(boundsSize: image.size) { _ in image }
             self?.artwork = art
             self?.updateNowPlayingInfo()
+        }
+    }
+
+    /// Yoto icons are 16x16 pixel art: upscale with nearest-neighbour so lock-screen artwork stays crisp.
+    private static func pixelUpscaled(_ image: UIImage, to side: CGFloat = 512) -> UIImage {
+        guard image.size.width < side, let cg = image.cgImage else { return image }
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: CGSize(width: side, height: side), format: format).image { ctx in
+            ctx.cgContext.interpolationQuality = .none
+            ctx.cgContext.translateBy(x: 0, y: side)
+            ctx.cgContext.scaleBy(x: 1, y: -1)
+            ctx.cgContext.draw(cg, in: CGRect(x: 0, y: 0, width: side, height: side))
         }
     }
 

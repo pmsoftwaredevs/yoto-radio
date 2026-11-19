@@ -39,7 +39,8 @@ final class YotoAPIClient {
                     await self.stations(
                         forCardId: summary.cardId,
                         fallbackTitle: summary.title,
-                        fallbackIconURLString: summary.metadata?.cover?.imageL
+                        fallbackIconURLString: summary.metadata?.cover?.imageL,
+                        fallbackMetadata: summary.metadata
                     )
                 }
             }
@@ -77,10 +78,10 @@ final class YotoAPIClient {
         }
     }
 
-    private func stations(forCardId cardId: String, fallbackTitle: String?, fallbackIconURLString: String?) async -> [RadioStation] {
+    private func stations(forCardId cardId: String, fallbackTitle: String?, fallbackIconURLString: String?, fallbackMetadata: CardMetadata?) async -> [RadioStation] {
         do {
             let detail = try await fetchCardDetail(cardId: cardId)
-            return Self.flatten(detail: detail, fallbackTitle: fallbackTitle, fallbackIconURLString: fallbackIconURLString)
+            return Self.flatten(detail: detail, fallbackTitle: fallbackTitle, fallbackIconURLString: fallbackIconURLString, fallbackMetadata: fallbackMetadata)
         } catch {
             // One bad/unreachable card shouldn't take down the whole list.
             return []
@@ -121,12 +122,12 @@ final class YotoAPIClient {
         return try decoder.decode(CardDetail.self, from: data)
     }
 
-    private static func flatten(detail: CardDetail, fallbackTitle: String?, fallbackIconURLString: String?) -> [RadioStation] {
+    private static func flatten(detail: CardDetail, fallbackTitle: String?, fallbackIconURLString: String?, fallbackMetadata: CardMetadata?) -> [RadioStation] {
         guard let chapters = detail.content?.chapters else { return [] }
 
         let cardTitle = detail.title ?? fallbackTitle ?? String(localized: "Radio")
         let cardIconString = detail.metadata?.cover?.imageL ?? fallbackIconURLString
-        let languages = detail.metadata?.languages ?? []
+        let languages = Self.languages(for: [detail.metadata, fallbackMetadata], title: cardTitle)
 
         // Some chapters alias the exact same stream under a different key (legacy naming);
         // keep only the first occurrence of each URL.
@@ -169,6 +170,26 @@ final class YotoAPIClient {
                 languages: languages
             )
         }
+    }
+
+    /// Many radio cards have no `languages` tag, only a country in `author`; infer the
+    /// language from it so every station can be filtered by language.
+    private static let countryLanguages: [String: String] = [
+        "BBC": "en", "United States": "en", "United Kingdom": "en", "Australia": "en",
+        "Germany": "de", "Poland": "pl", "Italy": "it", "Norway": "no",
+        "Spain": "es", "Netherlands": "nl", "France": "fr",
+    ]
+
+    /// `/card/{id}` and `/card/library/free` don't always carry the same metadata, so both are checked.
+    private static func languages(for sources: [CardMetadata?], title: String) -> [String] {
+        let metadata = sources.compactMap { $0 }
+        if let tagged = metadata.lazy.compactMap(\.languages).first(where: { !$0.isEmpty }) { return tagged }
+        // Cosquillas is a Spanish-language station even though its card says "United States".
+        if title == "Cosquillas" { return ["es"] }
+        if let code = metadata.lazy.compactMap({ $0.author.flatMap { countryLanguages[$0] } }).first { return [code] }
+        // No clear language (e.g. Yoto Radio Global, instrumental Yoto Classical Radio):
+        // group these under one shared "International" filter rather than guessing.
+        return [RadioStation.internationalLanguageCode]
     }
 
     /// Appends a short disambiguator derived from the chapter key when two chapters in the

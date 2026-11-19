@@ -26,6 +26,7 @@ struct CardMetadata: Codable {
     let cover: CardCover?
     let media: CardMedia?
     let languages: [String]?
+    let author: String?
 }
 
 struct CardSummary: Codable, Identifiable {
@@ -93,6 +94,9 @@ struct RadioStation: Identifiable, Hashable, Codable {
     /// ISO language codes from the card's metadata (e.g. "fr", "en"), used to prioritize
     /// stations matching the languages configured on the device. Empty when untagged.
     let languages: [String]
+
+    /// ISO 639 code for "multiple languages", used for stations whose language isn't clear.
+    static let internationalLanguageCode = "mul"
 
     var iconURL: URL? {
         guard let iconURLString else { return nil }

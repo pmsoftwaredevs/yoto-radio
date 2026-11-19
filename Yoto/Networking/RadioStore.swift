@@ -12,11 +12,14 @@ import Foundation
 private struct RadioCatalogCache: Codable {
     let stations: [RadioStation]
     let fetchedAt: Date
+    /// Bump when the way stations are built changes, so stale caches are discarded.
+    var version: Int? = Self.currentVersion
 
     static let maxAge: TimeInterval = 7 * 24 * 60 * 60
+    static let currentVersion = 4
 
     var isFresh: Bool {
-        Date().timeIntervalSince(fetchedAt) < Self.maxAge
+        version == Self.currentVersion && Date().timeIntervalSince(fetchedAt) < Self.maxAge
     }
 
     private static var fileURL: URL {

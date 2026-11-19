@@ -11,6 +11,16 @@
         }
       }
     },
+    "All" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toutes"
+          }
+        }
+      }
+    },
     "Buffering…" : {
       "localizations" : {
         "fr_FR" : {
@@ -97,6 +107,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chargement des radios…"
+          }
+        }
+      }
+    },
+    "Others" : {
+      "localizations" : {
+        "fr_FR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autres"
           }
         }
       }

@@ -114,7 +114,7 @@ struct NowPlayingView: View {
                 if let iconURL = playback.currentStation?.iconURL {
                     AsyncImage(url: iconURL) { phase in
                         if case .success(let image) = phase {
-                            image.resizable().scaledToFit().padding(28)
+                            image.interpolation(.none).resizable().scaledToFit().padding(28)
                         } else {
                             fallbackArt
                         }
