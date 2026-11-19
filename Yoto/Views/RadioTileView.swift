@@ -26,7 +26,7 @@ struct RadioTileView: View {
                 if let iconURL = station.iconURL {
                     AsyncImage(url: iconURL) { phase in
                         if case .success(let image) = phase {
-                            image.resizable().scaledToFit().padding(12)
+                            image.interpolation(.none).resizable().scaledToFit().padding(12)
                         } else {
                             fallbackIcon
                         }
