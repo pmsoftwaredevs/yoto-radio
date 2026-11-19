@@ -186,6 +186,9 @@ final class YotoAPIClient {
         if let tagged = metadata.lazy.compactMap(\.languages).first(where: { !$0.isEmpty }) { return tagged }
         // Cosquillas is a Spanish-language station even though its card says "United States".
         if title == "Cosquillas" { return ["es"] }
+        // Instrumental station: "zxx" is the ISO 639 code for "no linguistic content",
+        // shown as a "Music" filter.
+        if title == "Yoto Classical Radio" { return [RadioStation.musicLanguageCode] }
         if let code = metadata.lazy.compactMap({ $0.author.flatMap { countryLanguages[$0] } }).first { return [code] }
         return []
     }

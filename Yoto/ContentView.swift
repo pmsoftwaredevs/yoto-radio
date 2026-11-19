@@ -12,6 +12,21 @@ struct ContentView: View {
     @ObservedObject private var playback = PlaybackManager.shared
     @ObservedObject private var castManager = CastManager.shared
     @State private var showingNowPlaying = false
+    @State private var selectedLanguage: String?
+
+    /// Languages present in the catalog, in the store's order (device languages first).
+    private var availableLanguages: [String] {
+        var seen = Set<String>()
+        let codes = store.stations.flatMap(\.languages).filter { seen.insert($0).inserted }
+        // Keep "Music" at the end of the bar, after the spoken languages.
+        return codes.filter { $0 != RadioStation.musicLanguageCode }
+            + codes.filter { $0 == RadioStation.musicLanguageCode }
+    }
+
+    private var visibleStations: [RadioStation] {
+        guard let selectedLanguage else { return store.stations }
+        return store.stations.filter { $0.languages.contains(selectedLanguage) }
+    }
 
     // Fixed 3-per-row layout: source icons are tiny (16x16), so smaller tiles mean less
     // upscaling and less visible pixelation than the wider adaptive tiles used before.
@@ -59,10 +74,11 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             ScrollView {
+                languageFilterBar
                 LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(store.stations) { station in
+                    ForEach(visibleStations) { station in
                         Button {
-                            playback.play(station, in: store.stations)
+                            playback.play(station, in: visibleStations)
                         } label: {
                             RadioTileView(station: station, isActive: playback.currentStation?.id == station.id)
                         }
@@ -75,8 +91,43 @@ struct ContentView: View {
             .refreshable { await store.load() }
         }
     }
+
+    private var languageFilterBar: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                filterChip(String(localized: "All"), isSelected: selectedLanguage == nil) {
+                    selectedLanguage = nil
+                }
+                ForEach(availableLanguages, id: \.self) { code in
+                    filterChip(languageName(code), isSelected: selectedLanguage == code) {
+                        selectedLanguage = code
+                    }
+                }
+            }
+            .padding(.horizontal)
+        }
+        .padding(.top, 4)
+    }
+
+    private func filterChip(_ title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: { withAnimation { action() } }) {
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .padding(.horizontal, 14)
+                .padding(.vertical, 7)
+                .foregroundStyle(isSelected ? Color.white : Color.primary)
+                .background(isSelected ? Color.accentColor : Color(.secondarySystemFill), in: Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func languageName(_ code: String) -> String {
+        if code == RadioStation.musicLanguageCode { return String(localized: "Music") }
+        return (Locale.current.localizedString(forLanguageCode: code) ?? code).localizedCapitalized
+    }
 }
 
 #Preview {
     ContentView()
 }
+

@@ -16,7 +16,7 @@ private struct RadioCatalogCache: Codable {
     var version: Int? = Self.currentVersion
 
     static let maxAge: TimeInterval = 7 * 24 * 60 * 60
-    static let currentVersion = 2
+    static let currentVersion = 3
 
     var isFresh: Bool {
         version == Self.currentVersion && Date().timeIntervalSince(fetchedAt) < Self.maxAge

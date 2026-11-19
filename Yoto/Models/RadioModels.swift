@@ -95,6 +95,8 @@ struct RadioStation: Identifiable, Hashable, Codable {
     /// stations matching the languages configured on the device. Empty when untagged.
     let languages: [String]
 
+    static let musicLanguageCode = "zxx"
+
     var iconURL: URL? {
         guard let iconURLString else { return nil }
         return URL(string: iconURLString)
