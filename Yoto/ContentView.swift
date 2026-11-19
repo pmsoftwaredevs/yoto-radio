@@ -108,7 +108,7 @@ struct ContentView: View {
     }
 
     private func filterChip(_ title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: { withAnimation { action() } }) {
+        Button(action: action) {
             Text(title)
                 .font(.subheadline.weight(.semibold))
                 .padding(.horizontal, 14)
