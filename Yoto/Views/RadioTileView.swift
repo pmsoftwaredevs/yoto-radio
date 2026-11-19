@@ -55,7 +55,8 @@ struct RadioTileView: View {
             Text(station.title)
                 .font(.caption.weight(.semibold))
                 .multilineTextAlignment(.center)
-                .lineLimit(2)
+                .lineLimit(2, reservesSpace: true)
+                .frame(maxWidth: .infinity, alignment: .top)
                 .foregroundStyle(.primary)
         }
         .accessibilityElement(children: .combine)
