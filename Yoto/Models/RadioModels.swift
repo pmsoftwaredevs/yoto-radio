@@ -26,6 +26,7 @@ struct CardMetadata: Codable {
     let cover: CardCover?
     let media: CardMedia?
     let languages: [String]?
+    let author: String?
 }
 
 struct CardSummary: Codable, Identifiable {
