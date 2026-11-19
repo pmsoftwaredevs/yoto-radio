@@ -111,12 +111,12 @@
         }
       }
     },
-    "Music" : {
+    "Others" : {
       "localizations" : {
         "fr_FR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Musique"
+            "value" : "Autres"
           }
         }
       }

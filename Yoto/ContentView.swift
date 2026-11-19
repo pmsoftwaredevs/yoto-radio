@@ -12,20 +12,16 @@ struct ContentView: View {
     @ObservedObject private var playback = PlaybackManager.shared
     @ObservedObject private var castManager = CastManager.shared
     @State private var showingNowPlaying = false
-    @State private var selectedLanguage: String?
+    @State private var selectedFilter: LanguageFilter = .all
 
-    /// Languages present in the catalog, in the store's order (device languages first).
-    private var availableLanguages: [String] {
-        var seen = Set<String>()
-        let codes = store.stations.flatMap(\.languages).filter { seen.insert($0).inserted }
-        // Keep "Music" at the end of the bar, after the spoken languages.
-        return codes.filter { $0 != RadioStation.musicLanguageCode }
-            + codes.filter { $0 == RadioStation.musicLanguageCode }
-    }
+    /// The app's own languages get a button each, the device's language first;
+    /// every other language shares a single "Others" button.
+    private static let mainLanguages: [String] = {
+        Locale.current.language.languageCode?.identifier == "en" ? ["en", "fr"] : ["fr", "en"]
+    }()
 
     private var visibleStations: [RadioStation] {
-        guard let selectedLanguage else { return store.stations }
-        return store.stations.filter { $0.languages.contains(selectedLanguage) }
+        store.stations.filter { selectedFilter.matches($0, mainLanguages: Self.mainLanguages) }
     }
 
     // Fixed 3-per-row layout: source icons are tiny (16x16), so smaller tiles mean less
@@ -94,21 +90,19 @@ struct ContentView: View {
 
     private var languageFilterBar: some View {
         FlowLayout(spacing: 8) {
-                filterChip(String(localized: "All"), isSelected: selectedLanguage == nil) {
-                    selectedLanguage = nil
+                filterChip(String(localized: "All"), filter: .all)
+                ForEach(Self.mainLanguages, id: \.self) { code in
+                    filterChip(languageName(code), filter: .language(code))
                 }
-                ForEach(availableLanguages, id: \.self) { code in
-                    filterChip(languageName(code), isSelected: selectedLanguage == code) {
-                        selectedLanguage = code
-                    }
-                }
+                filterChip(String(localized: "Others"), filter: .other)
         }
         .padding(.horizontal)
         .padding(.top, 4)
     }
 
-    private func filterChip(_ title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
+    private func filterChip(_ title: String, filter: LanguageFilter) -> some View {
+        let isSelected = selectedFilter == filter
+        return Button { selectedFilter = filter } label: {
             Text(title)
                 .font(.subheadline.weight(.semibold))
                 .padding(.horizontal, 14)
@@ -120,8 +114,27 @@ struct ContentView: View {
     }
 
     private func languageName(_ code: String) -> String {
-        if code == RadioStation.musicLanguageCode { return String(localized: "Music") }
-        return (Locale.current.localizedString(forLanguageCode: code) ?? code).localizedCapitalized
+        (Locale.current.localizedString(forLanguageCode: code) ?? code).localizedCapitalized
+    }
+}
+
+enum LanguageFilter: Hashable {
+    case all
+    case language(String)
+    case other
+
+    func matches(_ station: RadioStation, mainLanguages: [String]) -> Bool {
+        // Stations with no clear language (instrumental, multilingual) suit every listener,
+        // so they show under each main language rather than in a category of their own.
+        let isUnclear = station.languages.contains(RadioStation.internationalLanguageCode)
+        switch self {
+        case .all:
+            return true
+        case .language(let code):
+            return isUnclear || station.languages.contains(code)
+        case .other:
+            return !isUnclear && !station.languages.contains(where: mainLanguages.contains)
+        }
     }
 }
 
